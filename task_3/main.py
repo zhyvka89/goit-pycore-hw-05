@@ -21,8 +21,10 @@ def load_logs(file_path: str) -> list:
                 return list_of_logs
         except:
             print("Oops, error!")
+            return []
     else:
         print("File does not exist.")
+        return []
 
 
 def filter_logs_by_level(logs: list, level: str) -> list:
@@ -49,17 +51,23 @@ def display_log_counts(counts: dict):
         
 
 def main():
-    dir = sys.argv[1]
-    file_path = Path(dir)
-    list = load_logs(file_path)
-    counts = count_logs_by_level(list)
-    display_log_counts(counts)
-    if len(sys.argv) > 2:
-        log_level = sys.argv[2]
-        print(f"Details for log level '{log_level.upper()}'")
-        filtered_logs = filter_logs_by_level(list, log_level)
-        for log in filtered_logs:
-            print(f'{log['date']} {log['time']} - {log['message']}')
+    try:
+        dir = sys.argv[1]
+        file_path = Path(dir)
+        list = load_logs(file_path)
+        if len(list):
+            counts = count_logs_by_level(list)
+            display_log_counts(counts)
+            if len(sys.argv) > 2:
+                log_level = sys.argv[2]
+                print(f"Details for log level '{log_level.upper()}'")
+                filtered_logs = filter_logs_by_level(list, log_level)
+                for log in filtered_logs:
+                    print(f'{log['date']} {log['time']} - {log['message']}')
+        else:
+            print('File is empty.')
+    except IndexError:
+        print('Please, enter the path to log file.')
 
 if __name__ == "__main__":
     main()
